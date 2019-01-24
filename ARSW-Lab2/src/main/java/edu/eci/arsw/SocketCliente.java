@@ -10,7 +10,7 @@ public class SocketCliente {
 		BufferedReader in = null;
 
 		try {
-			echoSocket = new Socket("127.0.0.1", 8078);
+			echoSocket = new Socket("127.0.0.1", 8089);
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
