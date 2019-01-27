@@ -12,6 +12,31 @@ git clone https://github.com/andresflorezp/ARSW-LAB2.git
 * Java
 * Git
 
+## Parte GIT
+
+### URL
+URL es la abreviación de Uniform Resource Locator, y es básicamente una dirección para localizar recursos en internet. Una idea clara de
+como son las URLs la encontramos en nuestro navegador de internet. Así, la forma general de una URL es la siguiente:
+
+    <protocolo>://<servidor>:<puerto>/<dirección del recurso en el servidor>
+    
+### Métodos para leer información de un objeto URL
+
+    * **GetProtocol**
+
+    * **GetAuthority**
+
+    * **GetHost**
+
+    * **GetPort**
+
+    * **GetPath**
+
+    * **GetQuery**
+
+    * **GetFile**
+
+    * **GetRef**
 
 ## Autores
 
