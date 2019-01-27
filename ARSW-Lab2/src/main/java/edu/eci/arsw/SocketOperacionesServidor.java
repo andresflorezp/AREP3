@@ -6,10 +6,11 @@ import java.util.StringTokenizer;
 import java.io.*;
 
 public class SocketOperacionesServidor {
+	
 	public static void main(String[] args) throws IOException {
 		ServerSocket serverSocket = null;
 		try {
-			serverSocket = new ServerSocket(8078);
+			serverSocket = new ServerSocket(8182);
 		} catch (IOException e) {
 			System.err.println("Could not listen on port: 35000.");
 			System.exit(1);
@@ -23,31 +24,46 @@ public class SocketOperacionesServidor {
 		}
 		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		String inputLine, outputLine;
+		String inputLine, outputLine, funcion;
+		funcion="coseno";
 		while ((inputLine = in.readLine()) != null) {
 			StringTokenizer st = new StringTokenizer(inputLine);
 			String temp=st.nextToken();
 			double val =0.0;
 			outputLine = "Respuesta ";
-			if(temp.equals("fun:sin")) {
-				int fa = Integer.parseInt(st.nextToken());
-				val = Math.sin(fa);
-				outputLine+=val;
+			if (isNumeric(temp)== true) {
+				if(funcion.equals("coseno")) {
+					Double fa = Double.parseDouble(temp);
+					val = Math.cos(fa);
+					outputLine+=val;
+				}
+				else if(funcion.equals("seno")) {
+					Double fa = Double.parseDouble(temp);
+					val = Math.sin(fa);
+					outputLine+=val;
+				}
+				else {
+					Double fa = Double.parseDouble(temp);
+					val = Math.tan(fa);
+					outputLine+=val;
+				}
 			}
-			if(temp.equals("fun:cos") || temp.equals("fun:")) {
-				int fa = Integer.parseInt(st.nextToken());
-				val = Math.cos(fa);
-				outputLine+=val;
-				
-			}
-			if(temp.equals("fun:tan")) {
-				int fa = Integer.parseInt(st.nextToken());
-				val = Math.tan(fa);
-				outputLine+=val;
-	
+			else {
+				if(temp.equals("fun:sin")) {
+					funcion="seno";
+					outputLine+="funcion acutal seno";
+				}
+				else if(temp.equals("fun:cos") || temp.equals("fun:")) {
+					funcion="coseno";
+					outputLine+="funcion acutal coseno";
+				}
+				else if(temp.equals("fun:tan")) {
+					funcion="tangente";
+					outputLine+="funcion acutal tangente";
+				}
 			}
 			out.println(outputLine);
-			if (outputLine.equals("Respuestas: Bye."))
+			if (temp.equals("Bye"))
 				break;
 		}
 		out.close();
@@ -55,4 +71,19 @@ public class SocketOperacionesServidor {
 		clientSocket.close();
 		serverSocket.close();
 	}
+	
+	
+	public static boolean isNumeric(String cadena) {
+
+        boolean resultado;
+
+        try {
+            Integer.parseInt(cadena);
+            resultado = true;
+        } catch (NumberFormatException excepcion) {
+            resultado = false;
+        }
+
+        return resultado;
+    }
 }
