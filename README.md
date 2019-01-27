@@ -3,9 +3,9 @@
 
 ## Empezando
 
->Para clonar el archivo 
+Para clonar el archivo:
 
-git clone https://github.com/andresflorezp/ARSW-LAB2.git
+>git clone https://github.com/andresflorezp/ARSW-LAB2.git
 >
 ### Prerrequisitos
 * Maven
