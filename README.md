@@ -368,6 +368,322 @@ public class SocketOperacionesServidor {
 }
 ```
 
+## Ejercicio 4.4
+
+El código 4 presenta un servidor web que atiende una solicitud. Implemente el servidor e intente conectarse desde el browser.
+
+### Codificacion Cliente
+
+```java
+package edu.eci.arsw;
+
+import java.io.*;
+import java.net.*;
+
+public class SocketCliente {
+
+	public static void main(String[] args) throws IOException {
+	
+		Socket echoSocket = null;
+		PrintWriter out = null;
+		BufferedReader in = null;
+		try {
+			echoSocket = new Socket("127.0.0.1", 38000);
+			out = new PrintWriter(echoSocket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+
+		} catch (UnknownHostException e) {
+			System.err.println("Don’t know about host!.");
+			System.exit(1);
+		} catch (IOException e) {
+			System.err.println("Couldn’t get I/O for " + "the connection to: localhost.");
+			System.exit(1);
+		}
+		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+		String userInput;
+		System.out.println("Digita una url para ver el proceso");
+		System.out.println("Por fa que no este codificada");
+		while ((userInput = stdIn.readLine()) != null) {
+			out.println(userInput);
+			System.out.println("echo: " + in.readLine());
+		}
+		out.close();
+		in.close();
+		stdIn.close();
+		echoSocket.close();
+	}
+}
+```
+### Codificacion Servidor
+
+```java
+package edu.eci.arsw;
+
+import java.net.*;
+import java.io.*;
+
+public class HttpServerBasico {
+	public static void main(String[] args) throws IOException {
+		ServerSocket serverSocket = null;
+		try {
+			serverSocket = new ServerSocket(46000);
+		} catch (IOException e) {
+			System.err.println("Could not listen on port: 35000.");
+			System.exit(1);
+		}
+		Socket clientSocket = null;
+		PrintWriter out;
+		BufferedReader in;
+		for (;;) {
+			try {
+				System.out.println("Listo para recibir ...");
+				clientSocket = serverSocket.accept();
+			} catch (IOException e) {
+				System.err.println("Accept failed.");
+				System.exit(1);
+			}
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				System.out.println("Received: " + inputLine);
+				if (!in.ready()) {
+					break;
+				}
+			}
+			out.println("HTTP/1.1 200 OK");
+			out.println("Content-Type: text/html" + "\r\n");
+			out.println("<!DOCTYPE html>" + "\r\n");
+			out.println("<html>" + "\r\n");
+			out.println("<head>" + "\r\n");
+			out.println("<meta charset=\"UTF-8\">" + "\r\n");
+			out.println("<title>Title of the document</title>" + "\r\n");
+			out.println("</head>" + "\r\n");
+			out.println("<body>" + "\r\n");
+			out.println("<h1>My Web Site</h1>" + "\r\n");
+			out.println("</body>" + "\r\n");
+			out.println("</html>" + "\r\n");
+			out.flush();
+		}
+	}
+}
+```
+
+## Ejercicio 4.5
+
+Escriba un servidor web que soporte múltiples solicitudes seguidas (no concurrentes). El servidor debe retornar todos los archivos solicitados, incluyendo páginas html e imágenes.
+
+### Codificacion Servidor
+
+```java
+package edu.eci.arsw;
+
+import java.net.*;
+import java.io.*;
+
+public class HttpServer {
+
+	private static ServerSocket serverSocket = null;
+
+	private static boolean continuar = true;
+
+	private static Socket clientSocket = null;
+
+	public static void main(String[] args) throws IOException {
+
+		try {
+			serverSocket = new ServerSocket(38000);
+			int counter = 0;
+			while (continuar) {
+				counter++;
+				System.out.println("Listo para recibir ... " + counter);
+				clientSocket = serverSocket.accept();
+				String path = getPageRequest(clientSocket.getInputStream());
+				if (path.equals("/html1"))
+					html1(clientSocket.getOutputStream());
+				else if (path.equals("/html2"))
+					html2(clientSocket.getOutputStream());
+				else if (path.equals("/image1"))
+					image1(clientSocket.getOutputStream());
+				else if (path.equals("/image2"))
+					image2(clientSocket.getOutputStream());
+				else if (path.equals("/image3"))
+					image3(clientSocket.getOutputStream());
+				else if (path.equals("/image4"))
+					image4(clientSocket.getOutputStream());
+				else if (path.equals("/css1"))
+					css1(clientSocket.getOutputStream());
+				clientSocket.close();
+			}
+		} catch (IOException e) {
+			System.err.println("Could not listen on port: 35000.");
+			System.exit(1);
+		} finally {
+			serverSocket.close();
+		}
+	}
+
+	public static String getPageRequest(InputStream is) throws IOException {
+		is.mark(0);
+		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+		String inputLine = null;
+		while ((inputLine = in.readLine()) != null) {
+			if (!in.ready())
+				break;
+			if (inputLine.contains("GET")) {
+				String[] get = inputLine.split(" ");
+				return get[1];
+			}
+			break;
+		}
+		return "path";
+	}
+
+	// HTML
+	public static void html1(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Title of the document</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<h1>My Web Site</h1>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	public static void html2(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Cómo hacer una página web con HTML</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<h1>Cómo hacer una página web con HTML</h1>" + "\r\n");
+		response.println("<p> En el post de hoy voy a enseñarte <strong>cómo hacer una página web con HTML</strong>, pero antes …</p>" + "\r\n");
+		response.println("<h2>Conceptos básicos sobre páginas web</h2>" + "\r\n");
+		response.println("<p>¿Cuál es entonces la diferencia entre una página web y un sitio web?…</p>" + "\r\n");
+		response.println("<h3>Diferencias entre una página web y un sitio web</h3>" + "\r\n");
+		response.println("<p>Una <a href=”https://es.wikipedia.org/wiki/P%C3%A1gina_web”>página web</a> es un <strong>único documento electrónico</strong> que…</p>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	// IMAGENES
+
+	public static void image1(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Index</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<img src=\"https://c.stocksy.com/a/p8M600/z9/1515083.jpg\"></img>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	public static void image2(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Index</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nyamaha.jpg\"></img>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	public static void image3(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Index</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	public static void image4(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/html" + "\r\n");
+		response.println("<!DOCTYPE html>" + "\r\n");
+		response.println("<html>" + "\r\n");
+		response.println("<head>" + "\r\n");
+		response.println("<meta charset=\"UTF-8\">" + "\r\n");
+		response.println("<title>Index</title>" + "\r\n");
+		response.println("</head>" + "\r\n");
+		response.println("<body>" + "\r\n");
+		response.println("<img src=\"http://chandra.harvard.edu/photo/2017/arp299/arp299.jpg\"></img>" + "\r\n");
+		response.println("</body>" + "\r\n");
+		response.println("</html>" + "\r\n");
+		response.flush();
+		response.close();
+	}
+
+	// CSS
+
+	public static void css1(OutputStream os) {
+		PrintWriter response = new PrintWriter(os, true);
+		response.println("HTTP/1.1 200 OK");
+		response.println("Content-Type: text/css" + "\r\n");
+		response.println("p {" + "\r\n");
+		response.println("color: red;" + "\r\n");
+		response.println("width: 500px;" + "\r\n");
+		response.println(" border: 1px solid black;" + "\r\n");
+		response.println("}" + "\r\n");
+		response.flush();
+		response.close();
+
+	}
+
+	public static void writeRequest(InputStream is) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+		String inputLine = null;
+		while ((inputLine = in.readLine()) != null) {
+			if (!in.ready())
+				break;
+			System.out.println("Received: " + inputLine);
+		}
+	}
+
+}
+```
+
 ## Autores
 
 * **Andres Giovanne Florez Perez**  ARSW-LAB1 - [andresflorezp](https://github.com/andresflorezp)
