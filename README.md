@@ -683,15 +683,15 @@ public class HttpServer {
 
 }
 ```
-*Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una página HTML:
+* Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una página HTML:
 
 ![Screenshot](images/html2.png)
 
-*Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una imagen:
+* Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una imagen:
 
 ![Screenshot](images/image2.png)
 
-*Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con un documento css:
+* Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con un documento css:
 
 ![Screenshot](images/css1.png)
 
