@@ -683,6 +683,17 @@ public class HttpServer {
 
 }
 ```
+Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una página HTML:
+
+![Screenshot](images/html1.png)
+
+Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con una imagen:
+
+![Screenshot](images/image2.png)
+
+Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con un documento css:
+
+![Screenshot](images/css1.png)
 
 ## Autores
 
