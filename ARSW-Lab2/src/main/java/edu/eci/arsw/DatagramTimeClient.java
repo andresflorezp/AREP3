@@ -18,13 +18,16 @@ public class DatagramTimeClient {
 			DatagramSocket socket = new DatagramSocket();
 			byte[] buf = new byte[256];
 			InetAddress address = InetAddress.getByName("127.0.0.1");
-			DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4599);
+			DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4098);
 			socket.send(packet);
 			packet = new DatagramPacket(buf, buf.length);
 			socket.receive(packet);
 			String received = new String(packet.getData(), 0, packet.getLength());
 			System.out.println("Date: " + received);
-		} catch (SocketException ex) {
+
+		} catch (
+
+		SocketException ex) {
 			Logger.getLogger(DatagramTimeClient.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (UnknownHostException ex) {
 			Logger.getLogger(DatagramTimeClient.class.getName()).log(Level.SEVERE, null, ex);

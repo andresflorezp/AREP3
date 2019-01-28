@@ -15,34 +15,36 @@ public class DatagramTimeServer {
 
 	public DatagramTimeServer() {
 		try {
-			socket = new DatagramSocket(4599);
+			socket = new DatagramSocket(4098);
 		} catch (SocketException ex) {
 			Logger.getLogger(DatagramTimeServer.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
-	public void startServer() {
+	public void startServer() throws InterruptedException {
 		byte[] buf = new byte[256];
-		for (;;) {
-			try {
-				DatagramPacket packet = new DatagramPacket(buf, buf.length);
-				socket.receive(packet);
-				String dString = new Date().toString();
-				buf = dString.getBytes();
-				InetAddress address = packet.getAddress();
-				int port = packet.getPort();
-				packet = new DatagramPacket(buf, buf.length, address, port);
-				socket.send(packet);
+		
+		try {
+			DatagramPacket packet = new DatagramPacket(buf, buf.length);
+			socket.receive(packet);
+			String dString = new Date().toString();
+			buf = dString.getBytes();
+			InetAddress address = packet.getAddress();
+			int port = packet.getPort();
+			packet = new DatagramPacket(buf, buf.length, address, port);
+			socket.send(packet);
+			Thread.currentThread().wait(5000);
+			String[] L = {"1"};
+			DatagramTimeClient.main(L);
 
-			} catch (IOException ex) {
-				Logger.getLogger(DatagramTimeServer.class.getName()).log(Level.SEVERE, null, ex);
-			}
-			
+		} catch (IOException ex) {
+			Logger.getLogger(DatagramTimeServer.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		//socket.close();
+
+		socket.close();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		DatagramTimeServer ds = new DatagramTimeServer();
 		ds.startServer();
 	}
