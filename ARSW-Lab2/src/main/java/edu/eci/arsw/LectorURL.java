@@ -14,7 +14,6 @@ public class LectorURL {
 		String urluser = in.readLine();
 		String data="";
 
-		
 	    URL pagina = new URL("http://www."+urluser);
 	    
 	    try (BufferedReader reader = new BufferedReader(new InputStreamReader(pagina.openStream()))) {
