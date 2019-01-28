@@ -15,7 +15,6 @@ public class HttpServerBasico {
 		Socket clientSocket = null;
 		PrintWriter out;
 		BufferedReader in;
-		
 			try {
 				System.out.println("Listo para recibir ...");
 				clientSocket = serverSocket.accept();

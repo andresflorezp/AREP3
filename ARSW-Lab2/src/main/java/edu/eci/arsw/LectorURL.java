@@ -21,9 +21,6 @@ public class LectorURL {
 			while ((inputLine = reader.readLine()) != null) {
 				data+=inputLine;
 			}
-			
-			
-
 		} catch (IOException x) {
 			System.err.println(x);
 

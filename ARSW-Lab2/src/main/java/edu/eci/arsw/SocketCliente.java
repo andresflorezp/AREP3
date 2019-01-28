@@ -10,7 +10,7 @@ public class SocketCliente {
 		BufferedReader in = null;
 
 		try {
-			echoSocket = new Socket("127.0.0.1", 46000);
+			echoSocket = new Socket("127.0.0.1", 34800);
 			out = new PrintWriter(echoSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
 
@@ -23,10 +23,11 @@ public class SocketCliente {
 		}
 		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 		String userInput;
-
+		System.out.println("Digita una url para ver el proceso");
+		System.out.println("Por fa que no este codificada");
 		while ((userInput = stdIn.readLine()) != null) {
-			out.println(userInput);
-			System.out.println("echo: " + in.readLine());
+			out.println("http://www.rojadirecta.me/es?y");
+			//System.out.println("echo: " + in.readLine());
 
 		}
 		out.close();
