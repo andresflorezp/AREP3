@@ -6,19 +6,15 @@ import java.io.*;
 public class HttpServer {
 
 	private static ServerSocket serverSocket = null;
-
-	private static boolean continuar = true;
-
 	private static Socket clientSocket = null;
 
 	public static void main(String[] args) throws IOException {
 
 		try {
 			serverSocket = new ServerSocket(38000);
-			int counter = 0;
-			while (continuar) {
-				counter++;
-				System.out.println("Listo para recibir ... " + counter);
+
+			for (int cnt = 1;; cnt++) {
+				System.out.println("Listo para recibir ... " + cnt);
 				clientSocket = serverSocket.accept();
 				String path = getPageRequest(clientSocket.getInputStream());
 				if (path.equals("/html1"))
@@ -38,7 +34,7 @@ public class HttpServer {
 				clientSocket.close();
 			}
 		} catch (IOException e) {
-			System.err.println("Could not listen on port: 35000.");
+			System.err.println("Could not listen on port: 38000.");
 			System.exit(1);
 		} finally {
 			serverSocket.close();
@@ -88,15 +84,19 @@ public class HttpServer {
 		response.println("<html>" + "\r\n");
 		response.println("<head>" + "\r\n");
 		response.println("<meta charset=\"UTF-8\">" + "\r\n");
-		response.println("<title>Cómo hacer una página web con HTML</title>" + "\r\n");
+		response.println("<title>CÃ³mo hacer una pÃ¡gina web con HTML</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println("<h1>Cómo hacer una página web con HTML</h1>" + "\r\n");
-		response.println("<p> En el post de hoy voy a enseñarte <strong>cómo hacer una página web con HTML</strong>, pero antes …</p>" + "\r\n");
-		response.println("<h2>Conceptos básicos sobre páginas web</h2>" + "\r\n");
-		response.println("<p>¿Cuál es entonces la diferencia entre una página web y un sitio web?…</p>" + "\r\n");
-		response.println("<h3>Diferencias entre una página web y un sitio web</h3>" + "\r\n");
-		response.println("<p>Una <a href=”https://es.wikipedia.org/wiki/P%C3%A1gina_web”>página web</a> es un <strong>único documento electrónico</strong> que…</p>" + "\r\n");
+		response.println("<h1>CÃ³mo hacer una pÃ¡gina web con HTML</h1>" + "\r\n");
+		response.println(
+				"<p> En el post de hoy voy a enseÃ±arte <strong>cÃ³mo hacer una pÃ¡gina web con HTML</strong>, pero antes â€¦</p>"
+						+ "\r\n");
+		response.println("<h2>Conceptos bÃ¡sicos sobre pÃ¡ginas web</h2>" + "\r\n");
+		response.println("<p>Â¿CuÃ¡l es entonces la diferencia entre una pÃ¡gina web y un sitio web?â€¦</p>" + "\r\n");
+		response.println("<h3>Diferencias entre una pÃ¡gina web y un sitio web</h3>" + "\r\n");
+		response.println(
+				"<p>Una <a href=â€�https://es.wikipedia.org/wiki/P%C3%A1gina_webâ€�>pÃ¡gina web</a> es un <strong>Ãºnico documento electrÃ³nico</strong> queâ€¦</p>"
+						+ "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
@@ -134,7 +134,8 @@ public class HttpServer {
 		response.println("<title>Index</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nyamaha.jpg\"></img>" + "\r\n");
+		response.println(
+				"<img src=\"www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
@@ -152,7 +153,8 @@ public class HttpServer {
 		response.println("<title>Index</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
+		response.println(
+				"<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
