@@ -484,15 +484,19 @@ import java.io.*;
 public class HttpServer {
 
 	private static ServerSocket serverSocket = null;
+
+	private static boolean continuar = true;
+
 	private static Socket clientSocket = null;
 
 	public static void main(String[] args) throws IOException {
 
 		try {
 			serverSocket = new ServerSocket(38000);
-
-			for (int cnt = 1;; cnt++) {
-				System.out.println("Listo para recibir ... " + cnt);
+			int counter = 0;
+			while (continuar) {
+				counter++;
+				System.out.println("Listo para recibir ... " + counter);
 				clientSocket = serverSocket.accept();
 				String path = getPageRequest(clientSocket.getInputStream());
 				if (path.equals("/html1"))
@@ -512,7 +516,7 @@ public class HttpServer {
 				clientSocket.close();
 			}
 		} catch (IOException e) {
-			System.err.println("Could not listen on port: 38000.");
+			System.err.println("Could not listen on port: 35000.");
 			System.exit(1);
 		} finally {
 			serverSocket.close();
@@ -562,19 +566,15 @@ public class HttpServer {
 		response.println("<html>" + "\r\n");
 		response.println("<head>" + "\r\n");
 		response.println("<meta charset=\"UTF-8\">" + "\r\n");
-		response.println("<title>CÃ³mo hacer una pÃ¡gina web con HTML</title>" + "\r\n");
+		response.println("<title>Cómo hacer una página web con HTML</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println("<h1>CÃ³mo hacer una pÃ¡gina web con HTML</h1>" + "\r\n");
-		response.println(
-				"<p> En el post de hoy voy a enseÃ±arte <strong>cÃ³mo hacer una pÃ¡gina web con HTML</strong>, pero antes â€¦</p>"
-						+ "\r\n");
-		response.println("<h2>Conceptos bÃ¡sicos sobre pÃ¡ginas web</h2>" + "\r\n");
-		response.println("<p>Â¿CuÃ¡l es entonces la diferencia entre una pÃ¡gina web y un sitio web?â€¦</p>" + "\r\n");
-		response.println("<h3>Diferencias entre una pÃ¡gina web y un sitio web</h3>" + "\r\n");
-		response.println(
-				"<p>Una <a href=â€�https://es.wikipedia.org/wiki/P%C3%A1gina_webâ€�>pÃ¡gina web</a> es un <strong>Ãºnico documento electrÃ³nico</strong> queâ€¦</p>"
-						+ "\r\n");
+		response.println("<h1>Cómo hacer una página web con HTML</h1>" + "\r\n");
+		response.println("<p> En el post de hoy voy a enseñarte <strong>cómo hacer una página web con HTML</strong>, pero antes …</p>" + "\r\n");
+		response.println("<h2>Conceptos básicos sobre páginas web</h2>" + "\r\n");
+		response.println("<p>¿Cuál es entonces la diferencia entre una página web y un sitio web?…</p>" + "\r\n");
+		response.println("<h3>Diferencias entre una página web y un sitio web</h3>" + "\r\n");
+		response.println("<p>Una <a href=”https://es.wikipedia.org/wiki/P%C3%A1gina_web”>página web</a> es un <strong>único documento electrónico</strong> que…</p>" + "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
@@ -612,8 +612,7 @@ public class HttpServer {
 		response.println("<title>Index</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println(
-				"<img src=\"www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
+		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nyamaha.jpg\"></img>" + "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
@@ -631,8 +630,7 @@ public class HttpServer {
 		response.println("<title>Index</title>" + "\r\n");
 		response.println("</head>" + "\r\n");
 		response.println("<body>" + "\r\n");
-		response.println(
-				"<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
+		response.println("<img src=\"http://www.yamaha.com/YECDealerMedia/adgraphs/logos/nvideocd.jpg\"></img>" + "\r\n");
 		response.println("</body>" + "\r\n");
 		response.println("</html>" + "\r\n");
 		response.flush();
@@ -696,6 +694,125 @@ public class HttpServer {
 * Como ejemplo en la siguiente imagen vemos como hacemos una peticion desde el browser y nos responde con un documento css:
 
 ![Screenshot](images/css1.png)
+
+## Datagramas
+
+Un datagrama es un mensaje independiente autocontenido que es enviado a través de la red, y cuya llegada, tiempo de llegada y contenido no son garantizados. Estos datagramas son útiles para implementar servicios cuyos mensajes no tienen un contenido del cual dependen procesos fundamentales. 
+
+## Ejercicio 5
+
+Utilizando Datagramas escriba un programa que se conecte a un servidor que responde la hora actual en el servidor. El programa debe actualizar la hora cada 5 segundos según los datos del servidor. Si una hora no es recibida debe mantener la hora que tenía. Para la prueba se apagará el servidor y después de unos segundos se reactivará. El cliente debe seguir funcionando y actualizarse cuando el servidor este nuevamente funcionando.
+
+### Codificación cliente
+
+```java
+package edu.eci.arsw;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DatagramTimeClient implements Runnable {
+
+	DatagramSocket socket;
+	public DatagramTimeClient() throws SocketException {
+	
+		socket = new DatagramSocket();
+	}
+	@Override
+	public void run() {
+		for (;;) {
+			byte[] sendBuf = new byte[256];
+			try {	
+				byte[] buf = new byte[256];
+				InetAddress address = InetAddress.getByName("127.0.0.1");
+				DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4565);
+				socket.send(packet);
+				packet = new DatagramPacket(buf, buf.length);
+				socket.receive(packet);
+				String received = new String(packet.getData(), 0, packet.getLength());
+				System.out.println("Date: " + received);
+			} catch (SocketException ex) {
+				Logger.getLogger(DatagramTimeClient.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (UnknownHostException ex) {
+				Logger.getLogger(DatagramTimeClient.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (IOException ex) {
+				Logger.getLogger(DatagramTimeClient.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+	}
+	public static void main(String[] args) throws SocketException {
+		DatagramTimeClient datagram= new DatagramTimeClient();
+		datagram.run();
+	}
+}
+```
+
+### Codificación servidor
+
+```java
+package edu.eci.arsw;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class DatagramTimeServer implements Runnable {
+
+	DatagramSocket socket;
+
+	public DatagramTimeServer() {
+		try {
+			socket = new DatagramSocket(4565);
+		} catch (SocketException ex) {
+			Logger.getLogger(DatagramTimeServer.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
+
+	public static void main(String[] args) {
+		DatagramTimeServer ds = new DatagramTimeServer();
+		ds.run();
+	}
+	
+	@Override
+	public void run() {
+		for (;;) {
+			byte[] buf = new byte[256];
+			try {
+				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				socket.receive(packet);
+				String dString = new Date().toString();
+				buf = dString.getBytes();
+				InetAddress address = packet.getAddress();
+				int port = packet.getPort();
+				packet = new DatagramPacket(buf, buf.length, address, port);
+				socket.send(packet);
+				Thread.sleep(5000);
+			} catch (IOException ex) {
+				Logger.getLogger(DatagramTimeServer.class.getName()).log(Level.SEVERE, null, ex);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+```
+
+* En la siguiente imagen vemos como cada 5 segundo se actualiza la hora en la consola:
+
+![Screenshot](images/datagrama.jpg)
+
 
 ## Autores
 
