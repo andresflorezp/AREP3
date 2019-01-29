@@ -21,22 +21,14 @@ como son las URLs la encontramos en nuestro navegador de internet. Así, la form
     <protocolo>://<servidor>:<puerto>/<dirección del recurso en el servidor>
     
 ### Métodos para leer información de un objeto URL
+	System.out.println(google.getAuthority());//USE->Este metodo se usa
+   	System.out.println(google.getPath());//USE->Este metodo muestra el path de la url de donde lo quiere buscar
+   	System.out.println(google.getProtocol());//USE->Este metodo muetra el protocolo que se usa para la transferencia de datos puede ser http,https.....
+   	System.out.println(google.getHost());//USE->Este metodo muestra el Host de la url
+   	System.out.println(google.getQuery());//USE->Este metodo se usa cuando se manda algun formulario y apartir de este se hace una consulta
+   	System.out.println(google.getFile());//USE->Este metodo se usa para ver toda la consulta sobre un archivo apartir de este me muetra la carpeta y el query que yo le realize
+   	System.out.println(google.getRef());//USE->Este metodo muestra donde esta la referencia al objeto va despues de un #
 
-    * GetProtocol.
-
-    * GetAuthority.
-
-    * GetHost.
-
-    * GetPort.
-
-    * GetPath.
-
-    * GetQuery.
-
-    * GetFile.
-
-    * GetRef.
 
 ## Ejercicio 1
 
