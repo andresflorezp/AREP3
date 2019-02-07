@@ -5,7 +5,7 @@
 
 Para clonar el archivo:
 
->git clone https://github.com/andresflorezp/ARSW-LAB-2.git
+>git clone https://github.com/andresflorezp/AREP3.git
 >
 ### Prerrequisitos
 * Maven
@@ -808,9 +808,8 @@ public class DatagramTimeServer implements Runnable {
 
 ## Autores
 
-* **Andres Giovanne Florez Perez**  ARSW-LAB1 - [andresflorezp](https://github.com/andresflorezp)
+* **Andres Giovanne Florez Perez**  AREP-LAB2 - [andresflorezp](https://github.com/andresflorezp)
 
-* **Juan Nicolas Nontoa Caballero**  ARSW-LAB1 - [nontoa](https://github.com/nontoa)
 
 Consulte también la lista de [colaboradores](https://github.com/andresflorezp/ARSW-LAB-2/graphs/contributors) que participaron en este proyecto.
 
