@@ -1,24 +1,45 @@
 package edu.eci.arsw;
 
 import java.net.*;
+
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class HttpServer {
 
 	private static ServerSocket serverSocket = null;
 	private static Socket clientSocket = null;
-
+	private static ObjectInputStream entrada;
 	public static void main(String[] args) throws IOException {
 
 		try {
-			serverSocket = new ServerSocket(38000);
+			serverSocket = new ServerSocket(39000);
 
 			for (int cnt = 1;; cnt++) {
 				System.out.println("Listo para recibir ... " + cnt);
 				clientSocket = serverSocket.accept();
 				String path = getPageRequest(clientSocket.getInputStream());
+				System.out.println(path);
+				//System.out.println(LeerFichero.muestraContenido("Resources/index.html"));
+				PrintWriter response = new PrintWriter(clientSocket.getOutputStream());
+				//response.println("HTTP/1.1 200 OK");
+				//response.println("Content-Type: text/html" + "\r\n");
+				if(path.endsWith(".jpeg")) {
+					response.println("HTTP/1.1 200 OK");
+					response.println("Content-Type: image/jpeg\r\n");
+					procesarImagen(clientSocket.getOutputStream());
+					
+					
+					
+				}
+				response.println(LeerFichero.muestraContenido("Resources"+path));
+				
+
+/*
 				if (path.equals("/html1"))
-					html1(clientSocket.getOutputStream());
+					HTML(clientSocket.getOutputStream());
 				else if (path.equals("/html2"))
 					html2(clientSocket.getOutputStream());
 				else if (path.equals("/image1"))
@@ -31,6 +52,9 @@ public class HttpServer {
 					image4(clientSocket.getOutputStream());
 				else if (path.equals("/css1"))
 					css1(clientSocket.getOutputStream());
+				*/
+				response.flush();
+				response.close();
 				clientSocket.close();
 			}
 		} catch (IOException e) {
@@ -41,6 +65,35 @@ public class HttpServer {
 		}
 	}
 
+	
+	private static void procesarImagen(OutputStream os) throws IOException {
+        do { // procesar los mensajes enviados por el cliente
+ 
+            // leer el mensaje y mostrarlo en pantalla
+            try {
+                byte[] bytesImagen = (byte[]) entrada.readObject();
+                ByteArrayInputStream entradaImagen = new ByteArrayInputStream(bytesImagen);
+                BufferedImage bufferedImage = ImageIO.read(entradaImagen);
+ 
+                String nombreFichero=System.getProperty("user.home")+File.separatorChar+"captura.jpeg";
+                System.out.println("Generando el fichero: "+nombreFichero );
+                FileOutputStream out = new FileOutputStream(nombreFichero);
+                // esbribe la imagen a fichero
+                ImageIO.write(bufferedImage, "jpeg", out);
+                PrintWriter response = new PrintWriter(os, true);
+                response.println(out);
+                
+            }
+ 
+            // atrapar problemas que pueden ocurrir al tratar de leer del cliente
+            catch ( ClassNotFoundException excepcionClaseNoEncontrada ) {
+                System.out.println( "\nSe recibió un tipo de objeto desconocido" );
+            }
+ 
+        } while ( true );
+ 
+    } // fin del método pro
+	
 	public static String getPageRequest(InputStream is) throws IOException {
 		is.mark(0);
 		BufferedReader in = new BufferedReader(new InputStreamReader(is));
@@ -56,9 +109,11 @@ public class HttpServer {
 		}
 		return "path";
 	}
+	
+
 
 	// HTML
-	public static void html1(OutputStream os) {
+	public static void HTML(OutputStream os) {
 		PrintWriter response = new PrintWriter(os, true);
 		response.println("HTTP/1.1 200 OK");
 		response.println("Content-Type: text/html" + "\r\n");

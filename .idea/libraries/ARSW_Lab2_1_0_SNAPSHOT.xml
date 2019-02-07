@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ARSW-Lab2-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ARSW-Lab2/target/ARSW-Lab2-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
